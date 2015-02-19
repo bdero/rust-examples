@@ -4,7 +4,10 @@
 """Watch script for compiling Rust files."""
 
 import logging
+import os
+import subprocess
 import time
+
 
 from watchdog.observers import Observer
 from watchdog.events import RegexMatchingEventHandler
@@ -29,15 +32,35 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
         """
         Compile the Rust programs.
         """
-        file_path = event.src_path[len(self._source) + 1:-3]
+        full_path = event.src_path[len(self._source) + 1:-3]
+        file_path = full_path[:full_path.rfind("/") + 1]
+        file_name = full_path[len(file_path):]
+        destination_path = os.path.join(self._destination, file_path)
 
-        # Compile the rust file
+        # Create build directory
+        if not os.path.exists(destination_path):
+            os.makedirs(destination_path)
+
+        # Log the activity
         logging.info(
             "Compile: {} -> {}".format(
                 event.src_path,
-                "{}/{}".format(self._destination, file_path)
+                os.path.join(self._destination, full_path)
             )
         )
+
+        # Compile the rust file
+        result = subprocess.check_output(
+            "rustc -g -o {} {}".format(
+                os.path.join(self._destination, full_path),
+                event.src_path
+            ),
+            stderr=subprocess.STDOUT,
+            shell=True
+        )
+
+        # Log results
+        logging.info("Compiler output:\n{}".format(result))
 
     def on_modified(self, event):
         """
