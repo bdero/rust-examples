@@ -16,6 +16,7 @@ features of the language, since the Rust compiler often errors on incorrect
 code, even for issues much deeper than invalid syntax.
 
 Here's how to use it:
+
 1. Install the requirements: `pip install -r requirements.txt`
 2. Install the Rust compiler (`rustc`): http://www.rust-lang.org/
 3. Run the watcher: `python watch.py`
