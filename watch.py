@@ -49,18 +49,34 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
             )
         )
 
-        # Compile the rust file
-        result = subprocess.check_output(
-            "rustc -g -o {} {}".format(
-                os.path.join(self._destination, full_path),
-                event.src_path
+        commands = [
+            # Command to compile a rust file
+            (
+                "COMPILER OUTPUT",
+                "rustc -g -o {} {}".format(
+                    os.path.join(self._destination, full_path),
+                    event.src_path
+                )
             ),
-            stderr=subprocess.STDOUT,
-            shell=True
-        )
+            # Command to execute the compiled binary
+            (
+                "PROGRAM OUTPUT",
+                os.path.join(self._destination, full_path)
+            )
+        ]
 
-        # Log results
-        logging.info("Compiler output:\n{}".format(result))
+        for message, command in commands:
+            # Run the command
+            result = subprocess.check_output(
+                command,
+                stderr=subprocess.STDOUT,
+                shell=True
+            )
+
+            # Log the results
+            logging.info(
+                "{}:\n{}".format(message, result)
+            )
 
     def on_modified(self, event):
         """
