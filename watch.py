@@ -20,7 +20,7 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
     """
     def __init__(self, source, destination):
         super(RustConversionEventHandler, self).__init__(
-            regexes=["^{0}\/\d+\_[\w]+\/[\w]*\.rs$".format(source)],
+            regexes=["^{0}\/[\w]+\/[\w]*\.rs$".format(source)],
             ignore_directories=True,
             case_sensitive=False
         )
