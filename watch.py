@@ -76,7 +76,7 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
             except subprocess.CalledProcessError, e:
                 result = e.output
                 logging.error(
-                    "\"{}\" returned exit status: {}".format(
+                    "\033[91m\"{}\" returned exit status: {}\033[0m".format(
                         e.cmd,
                         e.returncode
                     )
@@ -84,7 +84,7 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
 
             # Log the results
             logging.info(
-                "{} OUTPUT:\n{}".format(message, result)
+                "\033[91m{} OUTPUT:\033[0m\n{}".format(message, result)
             )
 
     def on_modified(self, event):
