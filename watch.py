@@ -20,7 +20,7 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
     """
     def __init__(self, source, destination):
         super(RustConversionEventHandler, self).__init__(
-            regexes=["^{0}\/[\w]+\/[\w]*\.rs$".format(source)],
+            regexes=["^{0}\/[\w\.]+\/[\w]*\.rs$".format(source)],
             ignore_directories=True,
             case_sensitive=False
         )
@@ -52,7 +52,7 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
         commands = [
             # Command to compile a rust file
             (
-                "COMPILER OUTPUT",
+                "COMPILER",
                 "rustc -g -o {} {}".format(
                     os.path.join(self._destination, full_path),
                     event.src_path
@@ -60,22 +60,31 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
             ),
             # Command to execute the compiled binary
             (
-                "PROGRAM OUTPUT",
+                "PROGRAM",
                 os.path.join(self._destination, full_path)
             )
         ]
 
         for message, command in commands:
-            # Run the command
-            result = subprocess.check_output(
-                command,
-                stderr=subprocess.STDOUT,
-                shell=True
-            )
+            try:
+                # Run the command
+                result = subprocess.check_output(
+                    command,
+                    stderr=subprocess.STDOUT,
+                    shell=True
+                )
+            except subprocess.CalledProcessError, e:
+                result = e.output
+                logging.error(
+                    "\"{}\" returned exit status: {}".format(
+                        e.cmd,
+                        e.returncode
+                    )
+                )
 
             # Log the results
             logging.info(
-                "{}:\n{}".format(message, result)
+                "{} OUTPUT:\n{}".format(message, result)
             )
 
     def on_modified(self, event):
