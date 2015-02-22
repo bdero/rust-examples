@@ -11,9 +11,12 @@ Running the watcher
 -------------------
 
 The `watch.py` script in the root of this repository can be used to listen for
-and recompile Rust files and run them on change detection. This allows for rapidly testing
-features of the language, since the Rust compiler often errors on incorrect
-code, even for issues much deeper than invalid syntax.
+and recompile Rust files and run them on change detection. This allows for
+rapidly testing features of the language, since the Rust compiler often errors
+on incorrect code, even for issues much deeper than invalid syntax.
+
+*Note: The watcher will fail to compile some things, such as examples involving
+library building.*
 
 Here's how to use it:
 
