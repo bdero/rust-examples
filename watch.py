@@ -32,10 +32,13 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
         """
         Compile the Rust programs.
         """
-        full_path = event.src_path[len(self._source) + 1:-3]
-        file_path = full_path[:full_path.rfind("/") + 1]
-        file_name = full_path[len(file_path):]
-        destination_path = os.path.join(self._destination, file_path)
+        source_path = event.src_path[:event.src_path.rfind("/")]
+        destination_path = os.path.join(
+            self._destination,
+            source_path
+        )
+        source_file = os.path.join(source_path, "main.rs")
+        destination_file = os.path.join(destination_path, "main")
 
         # Create build directory
         if not os.path.exists(destination_path):
@@ -44,8 +47,8 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
         # Log the activity
         logging.info(
             "Compile: {} -> {}".format(
-                event.src_path,
-                os.path.join(self._destination, full_path)
+                source_file,
+                destination_file
             )
         )
 
@@ -54,14 +57,14 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
             (
                 "COMPILER",
                 "rustc -g -o {} {}".format(
-                    os.path.join(self._destination, full_path),
-                    event.src_path
+                    destination_file,
+                    source_file
                 )
             ),
             # Command to execute the compiled binary
             (
                 "PROGRAM",
-                os.path.join(self._destination, full_path)
+                destination_file
             )
         ]
 
