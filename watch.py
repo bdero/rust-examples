@@ -20,7 +20,7 @@ class RustConversionEventHandler(RegexMatchingEventHandler):
     """
     def __init__(self, source, destination):
         super(RustConversionEventHandler, self).__init__(
-            regexes=["^{0}\/[\w\.]+\/[\w]*\.rs$".format(source)],
+            regexes=["^{0}\/\w*rust\w*\/[\w\.]+\/[\w]*\.rs$".format(source)],
             ignore_directories=True,
             case_sensitive=False
         )
@@ -129,4 +129,4 @@ if __name__ == "__main__":
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
-    watch("rust_by_example", "bin")
+    watch(".", "bin")
