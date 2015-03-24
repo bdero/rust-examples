@@ -24,7 +24,7 @@ fn main() {
     };
 
     // Initialize the tape
-    let mut tape: Box<[u32]> = Box::new([0; 30000]);
+    let mut tape = create_tape();
 
     // Interpret the contents
     brainfuck(bf.as_bytes(), &mut tape);
@@ -39,6 +39,10 @@ fn read_file(path: &String) -> Result<String, io::Error> {
     try!(file.read_to_string(&mut contents));
 
     Ok(contents)
+}
+
+fn create_tape() -> Box<[u32]> {
+    return Box::new([0; 30000]);
 }
 
 fn brainfuck(bf: &[u8], tape: &mut Box<[u32]>) {
