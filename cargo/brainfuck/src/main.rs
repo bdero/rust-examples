@@ -1,3 +1,4 @@
+
 use std::env;
 
 use std::io::prelude::*;
@@ -61,10 +62,23 @@ fn brainfuck(bf: &[u8], tape: &mut Box<[u32]>) {
             44 /* , */ => println!("in"),
             91 /* [ */ =>
                 match tape[cursor] {
-                    0 =>
-                        while tape[cursor] != 93 {
-                            cursor += 1;
-                        },
+                    0 => {
+                        // Skip over all instructions until the matching `]` is
+                        // reached, cancelling out matching pairs of `[` and `]`
+                        // along the way.
+                        let mut inner_loops = 0;
+                        // Hop to the next instruction to begin looking for the
+                        // matching `]`.
+                        i += 1;
+                        while bf[i] != 93 || inner_loops > 0 {
+                            match bf[i] {
+                                91 => inner_loops += 1,
+                                93 => inner_loops -= 1,
+                                _ => (),
+                            }
+                            i += 1;
+                        }
+                    }
                     _ => loop_stack.push(i),
                 },
             93 /* ] */ =>
