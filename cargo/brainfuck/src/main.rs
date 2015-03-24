@@ -1,34 +1,26 @@
 use std::env;
 
 use std::io::prelude::*;
+use std::io;
 use std::fs::File;
 use std::char;
 
 
 fn main() {
-    // Use the first passed argument as the program name
-    let program = match env::args().nth(1) {
-        Some(path) => path,
-        None => panic!("Usage: brainfuck <filename>"),
+    // Get the first argument to use as the filename
+    let filename = match env::args().nth(1) {
+        Some(filename) => filename,
+        None => panic!("Usage: brainfuck <filename> [<tapesize>]"),
     };
 
-    // Open the file
-    let mut file = match File::open(&program) {
-        Ok(file) => file,
-        Err(e) =>
-            panic!(
-                "Couldn't open `{}`: {}",
-                program, e),
-    };
-
-    // Read the contents of the file
-    let mut bf = String::new();
-    match file.read_to_string(&mut bf) {
-        Ok(_) => (),
-        Err(e) =>
+    // Obtain the contents of the program file
+    let bf = match read_file(&filename) {
+        Ok(contents) => contents,
+        Err(e) => {
             panic!(
                 "Couldn't read from `{}`: {}",
-                program, e),
+                filename, e)
+        }
     };
 
     // Initialize the tape
@@ -36,6 +28,17 @@ fn main() {
 
     // Interpret the contents
     brainfuck(bf.as_bytes(), &mut tape);
+}
+
+fn read_file(path: &String) -> Result<String, io::Error> {
+    // Open the file
+    let mut file = try!(File::open(&path));
+
+    // Read the contents of the file
+    let mut contents = String::new();
+    try!(file.read_to_string(&mut contents));
+
+    Ok(contents)
 }
 
 fn brainfuck(bf: &[u8], tape: &mut Box<[u32]>) {
