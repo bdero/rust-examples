@@ -10,7 +10,7 @@ fn main() {
     // Get the first argument to use as the filename
     let filename = match env::args().nth(1) {
         Some(filename) => filename,
-        None => panic!("Usage: brainfuck <filename> [<tapesize>]"),
+        None => panic!("Usage: brainfuck <filename>"),
     };
 
     // Obtain the contents of the program file
@@ -86,7 +86,15 @@ fn brainfuck(bf: &[u8], tape: &mut Box<[u32]>) {
                 },
             93 /* ] */ =>
                 match tape[cursor] {
-                    0 => { loop_stack.pop(); },
+                    0 => {
+                        match loop_stack.pop() {
+                            Some(_) => (),
+                            None =>
+                                panic!(
+                                    "Mismatching loop brackets! Char: {}",
+                                    i),
+                        };
+                    },
                     _ => i = match loop_stack.last() {
                         Some(i) => *i,
                         None =>
@@ -99,4 +107,58 @@ fn brainfuck(bf: &[u8], tape: &mut Box<[u32]>) {
     }
 
     println!("");
+}
+
+#[test]
+fn test_read_file_success() {
+    let result = read_file(&String::from_str("example.bf"));
+    assert!(result.is_ok());
+}
+
+#[test]
+fn test_read_file_failure() {
+    let result = read_file(&String::from_str("does/not/exist.asdf"));
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_create_tape() {
+    let tape = create_tape();
+
+    assert!(tape.len() > 0);
+    for value in tape.iter() {
+        assert_eq!(*value, 0);
+    }
+}
+
+#[test]
+fn test_brainfuck_instructions() {
+    let mut tape = create_tape();
+    brainfuck(
+        "
+        [-<[+[]][]Nothing should happen for these brackets.][]
+        A (65): >+++++++[<++++++++++>-]<-----.
+        ".as_bytes(),
+        &mut tape);
+
+    let mut tape_iter = tape.iter();
+    assert_eq!(*tape_iter.next().unwrap(), 65);
+
+    for value in tape_iter {
+        assert_eq!(*value, 0);
+    }
+}
+
+#[test]
+#[should_panic]
+fn test_brainfuck_mismatching_brackets() {
+    let mut tape = create_tape();
+    brainfuck("]".as_bytes(), &mut tape);
+}
+
+#[test]
+#[should_panic]
+fn test_brainfuck_mismatching_brackets2() {
+    let mut tape = create_tape();
+    brainfuck("+]".as_bytes(), &mut tape);
 }
