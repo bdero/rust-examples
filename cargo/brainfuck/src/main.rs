@@ -10,25 +10,29 @@ fn main() {
     let mut args = env::args();
     args.next(); // Ignore the first argument (bin path)
 
-    let program_opt = args.next();
-    if program_opt.is_none() {
-        panic!("Usage: brainfuck <filename>");
-    }
-    let program = program_opt.unwrap();
+    let program = match args.next() {
+        Some(path) => path,
+        None => panic!("Usage: brainfuck <filename>"),
+    };
 
     // Open the file
-    let file = File::open(&program);
-    if file.is_err() {
-        panic!(
-            "Unable to open brainfuck program `{}`: {}!",
-            program,
-            file.err().unwrap().description()
-        );
-    }
+    let mut file = match File::open(&program) {
+        Ok(file) => file,
+        Err(e) =>
+            panic!(
+                "Couldn't open `{}`: {}",
+                program, e),
+    };
 
     // Read the contents of the file
     let mut bf = String::new();
-    file.ok().unwrap().read_to_string(&mut bf);
+    match file.read_to_string(&mut bf) {
+        Ok(_) => (),
+        Err(e) =>
+            panic!(
+                "Couldn't read from `{}`: {}",
+                program, e),
+    };
 
     // Initialize the tape
     let mut tape: Box<[u32]> = Box::new([0; 30000]);
