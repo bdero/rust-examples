@@ -1,4 +1,3 @@
-
 use std::env;
 
 use std::io::prelude::*;
@@ -8,10 +7,7 @@ use std::char;
 
 fn main() {
     // Use the first passed argument as the program name
-    let mut args = env::args();
-    args.next(); // Ignore the first argument (bin path)
-
-    let program = match args.next() {
+    let program = match env::args().nth(1) {
         Some(path) => path,
         None => panic!("Usage: brainfuck <filename>"),
     };
