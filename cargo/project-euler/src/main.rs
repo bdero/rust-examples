@@ -1,15 +1,17 @@
+#![feature(core)]
+use std::iter::AdditiveIterator;
+
 fn main() {
-    problem1();
+    println!("Please run the test suite to use; i.e. `cargo test`");
 }
 
-fn problem1() {
-    let mut sum = 0;
+fn problem1() -> u32 {
+    (0u32..1000)
+        .filter(|n| n%3 == 0 || n%5 == 0)
+        .sum()
+}
 
-    for i in 0..1000 {
-        if i%3 == 0 || i%5 == 0 {
-            sum += i;
-        }
-    }
-
-    println!("Problem 1: {}", sum);
+#[test]
+fn test_problem1() {
+    assert_eq!(problem1(), 233168);
 }
