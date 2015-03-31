@@ -7,6 +7,15 @@ This is mostly for experimenting to build up my knowledge of
 Many of the examples will be from [Rust by Example](http://rustbyexample.com).
 
 
+Building crates
+---------------
+
+There are several projects located in the `cargo` directory, including a simple
+brainguck interpreter.
+
+To build simply run: `cargo build`
+
+
 Running the watcher
 -------------------
 
