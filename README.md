@@ -1,6 +1,8 @@
 Rust Examples
 =============
 
+[![Build Status](https://travis-ci.org/bdero/rust-examples.svg?branch=master)](https://travis-ci.org/bdero/rust-examples)
+
 This is mostly for experimenting to build up my knowledge of
 [Rust](http://www.rust-lang.org/).
 
