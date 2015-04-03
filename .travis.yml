@@ -4,5 +4,5 @@ os:
     - osx
 script:
     - (cd cargo/fizzbuzz && cargo build -v)
-    - (cd cargo/brainfuck && cargo build -v)
+    - (cd cargo/brainfuck && cargo build -v && cargo test -v && cargo run -v example.bf)
     - (cd cargo/project-euler && cargo build -v && cargo test -v)
