@@ -1,3 +1,5 @@
+#![feature(collections)] // Used for tests
+
 use std::env;
 
 use std::io::prelude::*;
@@ -6,6 +8,7 @@ use std::fs::File;
 use std::char;
 
 
+#[cfg(not(test))]
 fn main() {
     // Get the first argument to use as the filename
     let filename = match env::args().nth(1) {
