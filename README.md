@@ -11,9 +11,13 @@ Building crates
 ---------------
 
 There are several projects located in the `cargo` directory, including a simple
-brainguck interpreter.
+brainfuck interpreter.
 
-To build simply run: `cargo build`
+To build and run a crate, simply:
+
+1. Navigate to the directory of a crate: `cd cargo/brainfuck/`
+2. Build the crate: `cargo build`
+3. Run the program: `cargo run`
 
 
 Running the watcher
